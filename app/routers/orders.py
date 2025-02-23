@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.database import SessionLocal
-from app.models import Order
+from app.models import Order, OrderCreate
 
 router = APIRouter()
 
@@ -14,8 +14,7 @@ async def get_db():
 
 
 @router.post("/orders/")
-async def create_order(order, db: AsyncSession = Depends(get_db)):
-    # Create new order instance
+async def create_order(order: OrderCreate, db: AsyncSession = Depends(get_db)):
     new_order = Order(**order.dict())
     db.add(new_order)
     await db.commit()
