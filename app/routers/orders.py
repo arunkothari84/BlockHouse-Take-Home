@@ -22,7 +22,6 @@ async def create_order(order: OrderCreate, db: AsyncSession = Depends(get_db)):
 
     # Notify WebSocket clients about the new order
     await manager.broadcast(f"New order created: {new_order.symbol} - {new_order.quantity} @ {new_order.price}")
-
     return new_order
 
 
