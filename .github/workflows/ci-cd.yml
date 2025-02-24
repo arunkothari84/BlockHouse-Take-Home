@@ -47,7 +47,7 @@ jobs:
           EC2_USER: ubuntu
           EC2_IP: 44.211.169.22
         run: |
-          scp -i ec2-key.pem -o StrictHostKeyChecking=no -r . --exclude .git $EC2_USER@$EC2_IP:/home/ubuntu/BlockHouse-Take-Home
+          rsync -avz -e "ssh -i ec2-key.pem" --exclude '.git' ./ $EC2_USER@$EC2_IP:/home/ubuntu/BlockHouse-Take-Home
 
 
           ssh -i ec2-key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_IP << 'EOF'
