@@ -37,7 +37,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Deploy to EC2
+      - name: Add SSH key
         run: |
-          scp -i your-key.pem -r . ubuntu@ec2-ip:/home/ubuntu/blockhouse-task
-          ssh -i your-key.pem ubuntu@ec2-ip "cd /home/ubuntu/blockhouse-task && docker build -t trade-app . && docker run -d -p 8000:8000 trade-app"
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2-key.pem
+          chmod 600 ec2-key.pem
+
+      - name: Deploy to EC2
+        env:
+          EC2_USER: ubuntu
+          EC2_IP: 44.211.169.22
+        run: |
+          scp -i ec2-key.pem -o StrictHostKeyChecking=no -r . $EC2_USER@$EC2_IP:/home/ubuntu/BlockHouse-Take-Home
+
+          ssh -i ec2-key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_IP << 'EOF'
+            cd /home/ubuntu/BlockHouse-Take-Home
+            docker build -t trade-app .
+            docker run -d -p 8000:8000 trade-app
+          EOF
+
+      - name: Checkout code
+        uses: actions/checkout@v2
