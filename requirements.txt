@@ -4,4 +4,4 @@ sqlalchemy
 aiosqlite
 httpx
 pytest
-starlette==0.46.0
+starlette==0.45.3
